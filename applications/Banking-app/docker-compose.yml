@@ -1,0 +1,47 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - user-service
+      - account-service
+      - transaction-service
+    networks:
+      - banking-network
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - banking-network
+
+  account-service:
+    build: ./account-service
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - user-service
+    networks:
+      - banking-network
+
+  transaction-service:
+    build: ./transaction-service
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - user-service
+      - account-service
+    networks:
+      - banking-network
+
+networks:
+  banking-network:
+    driver: bridge
